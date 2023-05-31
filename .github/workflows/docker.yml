@@ -8,17 +8,16 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    env:
+      TAG: "${{ secrets.DOCKERHUB_USERNAME }}/http-forwarder"
     steps:
     - uses: actions/checkout@v3
     - name: Docker Login
       uses: docker/login-action@v2.1.0
       with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
     - name: Build and push to latest
-      env:
-        TAG: "${{ secrets.DOCKERHUB_USERNAME }}/http-forwarder"
       run: |
           echo "github.ref_type: ${{ github.ref_type }}"
           echo "github.ref_name: ${{ github.ref_name }}"
@@ -30,5 +29,6 @@ jobs:
       env:
         TAGV: "${{ env.TAG }}:${{ github.ref_name }}"
       run: |
+          echo "TAG: $TAG"
           echo "TAGV: $TAGV"
-          docker tag ${{ env.TAG }} %TAV && docker push $TAGV
+          docker tag $TAG %TAV && docker push $TAGV
