@@ -16,20 +16,19 @@ jobs:
       with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-    - name: Build and push to docker
+    - name: Build and push to latest
       env:
         TAG: "${{ secrets.DOCKERHUB_USERNAME }}/http-forwarder"
-        TAGV: "${{ env.TAG }}:${{ github.ref_name }}"
       run: |
           echo "github.ref_type: ${{ github.ref_type }}"
           echo "github.ref_name: ${{ github.ref_name }}"
           echo "TAG: $TAG"
-          echo "TAGV: $TAGV"
           docker build -t $TAG .
           docker push $TAG
-          if [ "${{ github.ref_type }}" == "tag" ]
-          then
-            docker tag $TAG %TAV && docker push $TAGV
-          else
-            echo "no tag"
-          fi
+    - name: Push to tag
+      if: ${{ github.ref_type == 'tag' }}
+      env:
+        TAGV: "${{ env.TAG }}:${{ github.ref_name }}"
+      run: |
+          echo "TAGV: $TAGV"
+          docker tag ${{ env.TAG }} %TAV && docker push $TAGV
