@@ -21,6 +21,10 @@ jobs:
         TAG: "${{ secrets.DOCKERHUB_USERNAME }}/http-forwarder"
         TAGV: "$TAG:${{ github.ref_name }}"
       run: |
+          echo "github.ref_type: ${{ github.ref_type }}"
+          echo "github.ref_name: ${{ github.ref_name }}"
+          echo "TAG: $TAG"
+          echo "TAGV: $TAGV"
           docker build -t $TAG .
           docker push $TAG
           [ "${{ github.ref_type }}" == "tag" ] && docker tag $TAG %TAV && docker push $TAGV
