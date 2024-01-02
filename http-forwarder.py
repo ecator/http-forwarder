@@ -163,6 +163,6 @@ if __name__ == "__main__":
     port = config['server']['port']
     # 启动服务
     serverAddress = (host, port)
-    httpd = http.server.HTTPServer(serverAddress, RequestHandler)
+    httpd = http.server.ThreadingHTTPServer(serverAddress, RequestHandler)
     print(f'Starting HTTP Forward server on {host}:{port}...', flush=True)
     httpd.serve_forever()
